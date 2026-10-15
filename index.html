@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="SPEAR: Selective Preference Elicitation with Adaptive Rewards for VLM-Guided Robotic Manipulation. Accepted at IROS 2026.">
+  <meta name="citation_title" content="SPEAR: Selective Preference Elicitation with Adaptive Rewards for VLM-Guided Robotic Manipulation">
+  <meta name="citation_author" content="Wu, Zewen">
+  <meta name="citation_author" content="Liu, Ruizhe">
+  <meta name="citation_author" content="Zhou, Pei">
+  <meta name="citation_author" content="Chen, Feng">
+  <meta name="citation_author" content="Yang, Yanchao">
+  <meta name="citation_conference_title" content="IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_pdf_url" content="paper/SPEAR_IROS2026.pdf">
+  <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>SPEAR — IROS 2026 | Project Page</title>
+</head>
+<body>
+  <main>
+    <header class="paper-header section-wrap">
+      <h1><span class="paper-short">SPEAR</span>: Selective Preference Elicitation with Adaptive Rewards for VLM-Guided Robotic Manipulation</h1>
+      <div class="authors" aria-label="Paper authors">
+        <a href="mailto:zwwu@connect.hku.hk">Zewen Wu</a><span class="comma">,</span>
+        <span>Ruizhe Liu</span><span class="comma">,</span>
+        <span>Pei Zhou</span><span class="comma">,</span>
+        <span>Feng Chen</span><span class="comma">,</span>
+        <a href="mailto:yanchaoy@hku.hk">Yanchao Yang</a>
+      </div>
+
+      <p class="affiliation">The University of Hong Kong</p>
+
+      <p class="conference">IROS 2026</p>
+      <div class="publication-links" aria-label="Paper resources">
+        <a class="paper-button" href="paper/SPEAR_IROS2026.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l4.5 4.5v12.5H7zM14 3.5v5h4.5M9.5 12h6M9.5 15.5h6"/></svg> Paper
+        </a>
+        <!-- Replace this search URL with the exact https://arxiv.org/abs/XXXX.XXXXX after the preprint is published. -->
+        <a class="paper-button" href="https://arxiv.org/search/?query=SPEAR%3A+Selective+Preference+Elicitation+with+Adaptive+Rewards+for+VLM-Guided+Robotic+Manipulation&amp;searchtype=all&amp;abstracts=show&amp;order=-announced_date_first&amp;size=50" target="_blank" rel="noopener" title="Search arXiv by title; direct paper ID pending">
+          <i class="ai ai-arxiv" aria-hidden="true"></i> arXiv
+        </a>
+        <a class="paper-button" id="intro-trigger" href="assets/videos/IROS2026_1793.mp4" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m10 9 5 3-5 3z"/></svg> Intro Video
+        </a>
+      </div>
+    </header>
+
+    <section class="teaser section-wrap" aria-labelledby="teaser-heading">
+      <figure>
+        <a href="assets/figures/overview.png" target="_blank" rel="noopener" aria-label="Open original SPEAR method overview image">
+          <img src="assets/figures/overview.png" alt="Figure 1 of the SPEAR paper: distinguishability-aware query selection and adaptive reward transition." width="2152" height="978" fetchpriority="high">
+        </a>
+        <figcaption><strong>Figure 1.</strong> Overview of SPEAR. Distinguishability-aware preference querying and adaptive reward transition form the online VLM-guided reinforcement learning pipeline.</figcaption>
+      </figure>
+    </section>
+
+    <section class="reading-width text-section" id="abstract">
+      <h2>Abstract</h2>
+      <p>Recent Vision-Language Models (VLMs) enable automated preference labeling for robotic manipulation, yet their deployment remains impractical since each query incurs substantial inference cost, while VLMs frequently abstain on visually challenging comparisons. We propose SPEAR, a framework that transforms VLMs into efficient preference oracles via two synergistic mechanisms. First, we design distinguishability-aware query selection to reduce abstention rates by targeting only informative and distinguishable comparisons. Second, we deploy an adaptive reward transition that bootstraps exploration with VLM-synthesized guidance before preference-based refinement. Experiments on the manipulation benchmarks demonstrate that SPEAR achieves 88.9% average success, outperforming baselines by 23.3 percentage points, while significantly reducing abstention and wall-clock training time on contact-rich tasks. SPEAR learns three Mobile ALOHA manipulation tasks fully online on real hardware, demonstrating end-to-end real-world applicability. By addressing query efficiency and exploration challenges, SPEAR establishes VLMs as practical preference oracles for scalable robot learning without manual reward engineering.</p>
+    </section>
+
+    <section class="reading-width text-section" id="method">
+      <h2>Method Overview</h2>
+      <p>SPEAR addresses two practical obstacles to VLM-guided preference-based reinforcement learning: obtaining informative, answerable preferences under a limited query budget, and bootstrapping effective exploration when preference feedback alone is sparse.</p>
+      <div class="method-copy">
+        <h3>Distinguishability-aware Query Selection</h3>
+        <p>
+          Conventional preference acquisition often wastes expensive VLM queries
+          on visually ambiguous trajectory pairs, where the VLM cannot provide
+          reliable preference labels. SPEAR addresses this limitation by combining
+          global semantic features and local spatial features to capture
+          multi-scale visual differences between trajectories. An online-adapted
+          distinguishability model predicts the likelihood of obtaining valid
+          VLM feedback, which is further integrated with information gain to
+          prioritize informative and answerable comparisons. This mechanism
+          reduces unnecessary queries and improves the efficiency of
+          preference-based learning.
+        </p>
+        <h3>Adaptive Reward Transition</h3>
+        <p>
+          Preference-based reinforcement learning faces an exploration
+          bootstrapping challenge: initially random policies rarely generate
+          task-relevant trajectories that provide meaningful preference signals.
+          SPEAR introduces a two-stage reward strategy that first uses
+          VLM-synthesized warm-up rewards to guide exploration toward
+          task-relevant behaviors. Once the warm-up learning progress saturates,
+          the framework transitions to a learned preference-based reward for
+          further policy refinement. Relay exploration helps preserve behavioral
+          diversity throughout this process, enabling the collection of
+          informative trajectories without manually engineered task rewards.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-wrap paper-section" id="experiments">
+      <h2>Simulation Experiments</h2>
+      <p class="section-text">We evaluate SPEAR on six Meta-World manipulation tasks: drawer-open, drawer-close, button-press-topdown, soccer, door-close, and window-open. The learning curves below are reproduced directly from the accepted paper.</p>
+      <figure class="paper-figure">
+        <a href="assets/figures/learning-curves.png" target="_blank" rel="noopener" aria-label="Open high-resolution Meta-World learning curves"><img src="assets/figures/learning-curves.png" alt="Original learning curves from the paper comparing SPEAR against VLM-based and preference-learning baselines on six Meta-World tasks" loading="lazy"></a>
+        <figcaption><strong>Figure 2.</strong> Learning curves across six Meta-World tasks. Shaded regions indicate the standard deviation over five seeds.</figcaption>
+      </figure>
+      <p class="section-text">SPEAR reaches an average final success rate of <strong>88.9%</strong>, 23.3 percentage points above RL-VLM-F in the paper's comparison. At a matched 30% success level on drawer-open (without reward transition), SPEAR uses 960 preference queries with a 29.6% abstention rate versus 1,640 queries and 55.5% abstention for RL-VLM-F.</p>
+    </section>
+
+    <section class="section-wrap paper-section diagnostics" id="diagnostics">
+      <h2>VLM Feedback Diagnostics</h2>
+      <p class="section-text">An offline diagnostic study examines how visual distinguishability affects preference oracle behavior, averaged over five VLM backbones. The paper reports that larger visual differences generally reduce abstention and improve preference accuracy.</p>
+      <figure class="paper-figure constrained-figure">
+        <a href="assets/figures/vlm-diagnostics.png" target="_blank" rel="noopener" aria-label="Open original VLM diagnostics figure"><img src="assets/figures/vlm-diagnostics.png" alt="Original paper figure showing fitted VLM abstention and accuracy as a function of distinguishability" loading="lazy"></a>
+        <figcaption><strong>Figure 3.</strong> Average fitted probabilities of VLM abstention and preference accuracy with increasing visual distinguishability.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section-wrap paper-section" id="real-robot">
+      <h2>Real-World Robot Experiments</h2>
+      <p class="section-text">SPEAR is evaluated on a physical Mobile ALOHA system, where its online exploration and preference-learning pipeline is trained directly on the robot, without sim-to-real transfer.</p>
+      <figure class="paper-figure real-setup-figure">
+        <a href="assets/figures/real-robot-settings.png" target="_blank" rel="noopener" aria-label="Open original robot experiment settings"><img src="assets/figures/real-robot-settings.png" alt="Original paper figure showing the Mobile ALOHA drawer-open, window-open, and soccer task settings" loading="lazy"></a>
+        <figcaption><strong>Figure 4.</strong> Real-robot experiment task settings: (a) drawer-open, (b) window-open, (c) soccer.</figcaption>
+      </figure>
+      <h3 class="demo-heading">Real-Robot Demonstration</h3>
+      <div class="video-figure">
+        <video class="robot-video" src="assets/videos/video_SPEAR_final.mp4" poster="assets/posters/real-robot-frame.jpg" controls preload="metadata" playsinline aria-label="SPEAR real-robot demonstration video">
+          Your browser does not support HTML5 video. <a href="assets/videos/video_SPEAR_final.mp4">Download the video</a>.
+        </video>
+        <p class="video-caption">SPEAR real-robot experiments · Mobile ALOHA</p>
+      </div>
+      <p class="section-text robot-note">In the paper's online training experiments, the policies converge after 18.2K environment steps for drawer-open, 16.6K for window-open, and 12.6K for soccer.</p>
+    </section>
+
+    <section class="reading-width text-section citation-section" id="bibtex">
+      <h2>BibTeX</h2>
+      <div class="bibtex-wrap">
+        <pre><code id="bibtex-text">@inproceedings{wu2026spear,
+  title     = {SPEAR: Selective Preference Elicitation with Adaptive Rewards
+               for VLM-Guided Robotic Manipulation},
+  author    = {Wu, Zewen and Liu, Ruizhe and Zhou, Pei and
+               Chen, Feng and Yang, Yanchao},
+  booktitle = {IEEE/RSJ International Conference on Intelligent
+               Robots and Systems (IROS)},
+  year      = {2026},
+  note      = {Accepted}
+}</code></pre>
+        <button type="button" class="copy-citation" id="copy-citation" aria-label="Copy BibTeX citation">Copy</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer reading-width">
+    <p>© 2026 SPEAR authors · The University of Hong Kong</p>
+    <p class="credit">Page design inspired by <a href="https://nerfies.github.io/" target="_blank" rel="noopener">Nerfies</a> and academic robotics project pages.</p>
+  </footer>
+
+  <dialog id="intro-dialog" class="intro-dialog" aria-label="SPEAR introduction video">
+    <div class="dialog-inner">
+      <div class="dialog-bar"><strong>SPEAR — IROS 2026 Intro Video</strong><button type="button" id="close-intro" aria-label="Close introduction video">✕</button></div>
+      <video id="intro-video" controls preload="metadata" playsinline poster="assets/posters/intro-frame.jpg" aria-label="IROS 2026 SPEAR introduction talk">
+        <source src="assets/videos/IROS2026_1793.mp4" type="video/mp4">
+        <a href="assets/videos/IROS2026_1793.mp4">View intro video directly</a>
+      </video>
+    </div>
+  </dialog>
+  <div class="sr-only" id="message" role="status" aria-live="polite"></div>
+  <script src="main.js" defer></script>
+</body>
+</html>
